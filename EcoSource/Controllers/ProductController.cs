@@ -1,5 +1,6 @@
 ﻿using EcoSource.Model;
 using EcoSource.Services;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -18,16 +19,16 @@ namespace EcoSource.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
-            var products = _productService.GetProducts();
+            var products = await _productService.GetProducts();
             return Ok(products); // create 200 response , serialization concerting json kesterl swagger display
         }
         [HttpGet("{id}")]
-        public IActionResult GetProductById(int id)
+        public async Task<IActionResult> GetProductById(int id)
         {
-          
-            var products = _productService.GetProducts();
+
+            var products = await _productService.GetProducts();
 
             var product = products.FirstOrDefault(p => p.Id == id);
             if (product == null)
@@ -38,40 +39,52 @@ namespace EcoSource.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateProduct(int id, Product updatedProduct)
+        public async Task<IActionResult> UpdateProduct(int id, Product updatedProduct)
         {
-           
-            var products = _productService.GetProducts();
+
+            var products = await _productService.GetProducts();
             var existingProduct = products.FirstOrDefault(p => p.Id == id);
             if (existingProduct == null)
             {
                 return NotFound(); // Return a 404 response if the product is not found
             }
-            // Update the existing product with the values from the updatedProduct
+            if (!TryValidateModel(existingProduct))
+            {
+                // Update the existing product with the values from the updatedProduct
+                return ValidationProblem(ModelState);
+            }
             existingProduct.product_name = updatedProduct.product_name;
+            await _productService.UpdateProduct(existingProduct);
             return Ok(existingProduct); // Return the updated product with a 200 response
         }
 
         [HttpPatch("{id}")]
-        public IActionResult PatchProduct(int id, [FromBody] JsonPatchDocument<Product> patchDoc)
+        public async Task<IActionResult> PatchProduct(int id, [FromBody] JsonPatchDocument<Product> patchDoc)
         {
             ArgumentNullException.ThrowIfNull(patchDoc);
 
-            
-            var products = _productService.GetProducts();
-            var existingProduct = products.FirstOrDefault(p => p.Id == id);
+            var existingProduct =
+        await _productService.GetProductById(id);
             if (existingProduct == null)
             {
                 return NotFound(); // Return a 404 response if the product is not found
             }
+            if (!TryValidateModel(existingProduct))
+            {
+                // Update the existing product with the values from the updatedProduct
+                return ValidationProblem(ModelState);
+            }
             patchDoc.ApplyTo(existingProduct); // Apply the patch to the existing product
+           
+            await _productService.UpdateProduct(existingProduct);
+
             return Ok(existingProduct); // Return the patched product with a 200 response
         }
         [HttpDelete("{id}")]
-        public IActionResult DeleteProduct(int id)
+        public async Task<IActionResult> DeleteProduct(int id)
         {
-          
-            var products = _productService.GetProducts();
+
+            var products = await _productService.GetProducts();
 
             var existingProduct = products.FirstOrDefault(p => p.Id == id);
             if (existingProduct == null)
@@ -79,6 +92,7 @@ namespace EcoSource.Controllers
                 return NotFound(); // Return a 404 response if the product is not found
             }
             products.Remove(existingProduct); // Remove the existing product from the list
+            await _productService.DeleteProduct(existingProduct);
             return NoContent(); // Return a 204 response indicating successful deletion
         }
     }
