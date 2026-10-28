@@ -11,10 +11,31 @@ namespace EcoSource.Services
         {
             _productRepository = productRepository;
         }
-        public List<Product> GetProducts()
+
+       
+
+        public Task DeleteProduct(Product productId)
         {
-            return _productRepository.GetProducts();
+           // throw new NotImplementedException();
+           return _productRepository.DeleteProduct(productId);
+        }
+
+        public async Task<Product> GetProductById(int productId)
+        {
+            return await _productRepository.GetProductsById(productId);
+        }
+
+        public async Task<List<Product>> GetProducts()
+        {
+            return await _productRepository.GetProducts();
 
         }
+
+        public async Task UpdateProduct(Product product)
+        {
+             await _productRepository.UpdateProduct(product);
+        }
+
+      
     }
 }
