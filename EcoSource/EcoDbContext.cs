@@ -8,5 +8,7 @@ namespace EcoSource
         {
         }
         public DbSet<Model.Product> Products { get; set; } = null!;
+
+        public DbSet<Model.Category> Categories { get; set; } = null!;
     }
 }

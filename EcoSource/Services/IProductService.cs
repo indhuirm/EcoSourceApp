@@ -6,7 +6,7 @@ namespace EcoSource.Services
     {
         Task<List<Product>> GetProducts();
 
-        Task<List<Product>> GetProductById(int productId);
+        Task<Product> GetProductById(int id);
 
        Task UpdateProduct(Product product);
 

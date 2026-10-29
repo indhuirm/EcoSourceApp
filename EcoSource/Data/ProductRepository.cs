@@ -13,8 +13,8 @@ namespace EcoSource.Data
         }
 
         public async Task<Product> GetProductById(int id)
-        { 
-            return await _context.Products.FindAsync(id); 
+        {
+            return await _context.Products.FindAsync(id);
         }
 
         public async Task<List<Product>> GetProducts()
@@ -40,7 +40,10 @@ namespace EcoSource.Data
             return await _context.Products.ToListAsync();
         }
 
-       
+        public async Task<Product> GetProductsById(int productId)
+        {
+            return await _context.Products.FindAsync(productId);
+        }
 
         public async Task UpdateProduct(Product product)
         {

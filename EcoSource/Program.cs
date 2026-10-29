@@ -17,7 +17,7 @@ builder.Services.AddDbContext<EcoDbContext>(options =>
 
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IProductService,ProductServices>();
-
+builder.Services.AddScoped<ICategoryservice, Categoryservice>();
 
 var app = builder.Build();
 

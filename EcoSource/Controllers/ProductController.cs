@@ -63,8 +63,7 @@ namespace EcoSource.Controllers
         {
             ArgumentNullException.ThrowIfNull(patchDoc);
 
-            var existingProduct =
-        await _productService.GetProductById(id);
+            var existingProduct = await _productService.GetProductById(id);
             if (existingProduct == null)
             {
                 return NotFound(); // Return a 404 response if the product is not found

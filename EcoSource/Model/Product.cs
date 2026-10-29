@@ -9,5 +9,7 @@ namespace EcoSource.Model
         [MaxLength(255)]
         public string product_name { get; set; } = string.Empty;
 
+        public int CategoryId { get; set; }
+
     }
 }
